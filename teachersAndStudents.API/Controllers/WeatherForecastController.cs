@@ -1,11 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿
+
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.Identity.Web.Resource;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using teachersAndStudents.API.Entitys;
 
 namespace teachersAndStudents.API.Controllers
@@ -33,7 +33,6 @@ namespace teachersAndStudents.API.Controllers
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
-            HttpContext.VerifyUserHasAnyAcceptedScope(scopeRequiredByApi);
 
             var rng = new Random();
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast

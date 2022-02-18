@@ -1,27 +1,27 @@
-using Microsoft.AspNetCore.Authentication;
+
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.Identity.Web;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using teachersAndStudents.API.Helpers;
 using teachersAndStudents.API.Modules;
+using teachersAndStudents.API.Services;
 
 namespace teachersAndStudents.API
 {
     public class Startup
     {
+
         public Startup(IConfiguration configuration)
         {
+
             Configuration = configuration;
         }
 
@@ -30,9 +30,42 @@ namespace teachersAndStudents.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<Jwt>(Configuration.GetSection("JWT"));
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddMicrosoftIdentityWebApi(Configuration.GetSection("AzureAd"));
+            services.AddCors();
+            services.AddIdentity<IdentityUser, IdentityRole>
+                ().AddEntityFrameworkStores<AppDbContext>
+                ().AddDefaultTokenProviders(); 
+
+            var appSettingsSection = Configuration.GetSection("JWT");
+            services.Configure<Jwt>(appSettingsSection);
+            var _Jwt = appSettingsSection.Get<Jwt>();
+
+            services.AddDbContext<AppDbContext>(options => 
+                options.UseSqlServer(Configuration.GetConnectionString("Connection")));
+
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(x =>
+            {
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = false;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+
+                    IssuerSigningKey = new SymmetricSecurityKey(_Jwt.Key()),
+                    ValidAudience = _Jwt.Audience,
+                    ValidIssuer = Configuration["JWT:Issuer"]
+                };
+            });
+
+            services.AddScoped<IAuthService,AuthService>();
+            services.AddScoped<IAccountModule,AccountModule>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -54,6 +87,11 @@ namespace teachersAndStudents.API
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors(x => x
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader());
 
             app.UseAuthentication();
             app.UseAuthorization();
