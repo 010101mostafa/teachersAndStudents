@@ -7,5 +7,6 @@ namespace TeachersAndStudents.models
         public string TeacherId { get; set; }
         [Key]
         public string ClassId { get; set; }
+        public string Name { get; set; }
     }
 }

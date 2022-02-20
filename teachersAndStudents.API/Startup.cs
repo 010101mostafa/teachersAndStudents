@@ -11,7 +11,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using teachersAndStudents.API.Helpers;
-using teachersAndStudents.API.Modules;
+using teachersAndStudents.API.Models;
 using teachersAndStudents.API.Services;
 
 namespace teachersAndStudents.API
@@ -65,7 +65,8 @@ namespace teachersAndStudents.API
             });
 
             services.AddScoped<IAuthService,AuthService>();
-            services.AddScoped<IAccountModule,AccountModule>();
+            services.AddScoped<IAccountModel, AccountModel>();
+            services.AddScoped<ITeacherModel,TeacherModel>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>

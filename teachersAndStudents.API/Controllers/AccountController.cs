@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using teachersAndStudents.API.Modules;
+using teachersAndStudents.API.Models;
 using TeachersAndStudents.models;
 
 namespace teachersAndStudents.API.Controllers
@@ -12,9 +12,9 @@ namespace teachersAndStudents.API.Controllers
     [Route("[controller]")]
     public class AccountController : Controller
     {
-        private readonly IAccountModule account;
+        private readonly IAccountModel account;
 
-        public AccountController( IAccountModule account)
+        public AccountController(IAccountModel account)
         {
             this.account = account;
         }
