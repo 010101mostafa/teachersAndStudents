@@ -68,8 +68,8 @@ namespace teachersAndStudents.API.Services
                 claims: claims,
                 expires: DateTime.Now.AddDays(_jwt.DurationInDays),
                 signingCredentials: signingCredentials);
-
             return new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
+            
         }
     }
 }

@@ -1,0 +1,30 @@
+﻿@page "/"
+@using System.Security.Claims
+@attribute [Authorize]
+<h2>Hello</h2>
+
+<h4>Welcome to the App </h4>
+
+
+<SurveyPrompt Title="@(new string[]{ getFirst("sub"),getLast("roles") })" />
+@code{
+    [CascadingParameter]
+    private Task<AuthenticationState> authState { get; set; }
+    private ClaimsPrincipal user{ get; set; }
+    protected override async void OnParametersSet()
+    {
+        base.OnParametersSet();
+        if (authState is not null)
+            user = (await authState).User;
+
+    }
+    public string getFirst(string claim)
+    {
+        return user.Claims.FirstOrDefault(o => o.Type == claim).Value;
+    }
+    public string getLast(string claim)
+    {
+        return user.Claims.LastOrDefault(o => o.Type == claim).Value;
+    }
+
+}

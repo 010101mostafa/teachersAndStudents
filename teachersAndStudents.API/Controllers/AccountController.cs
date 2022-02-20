@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using teachersAndStudents.API.Entitys;
 using teachersAndStudents.API.Modules;
+using TeachersAndStudents.models;
 
 namespace teachersAndStudents.API.Controllers
 {
@@ -19,8 +19,8 @@ namespace teachersAndStudents.API.Controllers
             this.account = account;
         }
 
-        [HttpPost("SignIn")]
-        public async Task<IActionResult> Register(Signin model)
+        [HttpPost("SignUp")]
+        public async Task<IActionResult> Register(SignUp model)
         {
             if (!ModelState.IsValid)
             {
@@ -40,7 +40,7 @@ namespace teachersAndStudents.API.Controllers
                 };
                 try
                 {
-                    return Ok(account.addStudent(user,student,model.password));
+                    return Ok(await account.addStudent(user,student,model.password));
                 }
                 catch (System.Exception)
                 {
@@ -55,7 +55,7 @@ namespace teachersAndStudents.API.Controllers
                 };
                 try
                 {
-                    return Ok(account.addTeacher(user, teacher, model.password));
+                    return Ok(await account.addTeacher(user, teacher, model.password));
                 }
                 catch (System.Exception)
                 {
@@ -74,7 +74,7 @@ namespace teachersAndStudents.API.Controllers
             }
             try
             {
-                return Ok(account.Login(model.UserName, model.password));
+                return Ok(await account.Login(model.UserName, model.password));
             }
             catch (System.Exception)
             {
@@ -82,5 +82,12 @@ namespace teachersAndStudents.API.Controllers
                 return BadRequest(ModelState);
             }
         }
+        [HttpGet][Authorize]
+        public async Task<IActionResult> check() { 
+             if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+             else
+                return Ok(true);
+        } 
     }
 }

@@ -3,8 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using teachersAndStudents.API.Entitys;
 using teachersAndStudents.API.Services;
+using TeachersAndStudents.models;
 
 namespace teachersAndStudents.API.Modules
 {
@@ -36,8 +36,7 @@ namespace teachersAndStudents.API.Modules
             await appDbContext.Students.AddAsync(student);
             await userManager.AddToRoleAsync(user, "Student");
             await appDbContext.SaveChangesAsync();
-            string Token = await authService.CreateJwtToken(user);
-            return Token;
+            return await authService.CreateJwtToken(user);
         }
         public async Task<string> addTeacher(IdentityUser user, Teacher teacher, string Password)
         {
@@ -51,8 +50,7 @@ namespace teachersAndStudents.API.Modules
             await userManager.AddToRoleAsync(user, "Student");
             await userManager.AddToRoleAsync(user, "Teacher");
             await appDbContext.SaveChangesAsync();
-            string Token = await authService.CreateJwtToken(user);
-            return Token;
+            return await authService.CreateJwtToken(user);
         }
 
         public async Task<IEnumerable<Student>> GetStudents()
@@ -64,10 +62,9 @@ namespace teachersAndStudents.API.Modules
             var user = await userManager.FindByNameAsync(UserName);
             if (user==null || !await userManager.CheckPasswordAsync(user, Password))
             {
-                return String.Empty;
+                return null;
             }
-            string Token = await authService.CreateJwtToken(user);
-            return Token;
+            return await authService.CreateJwtToken(user);
             }
     }
 }

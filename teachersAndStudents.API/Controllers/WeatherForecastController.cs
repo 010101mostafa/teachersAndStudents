@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using teachersAndStudents.API.Entitys;
+using TeachersAndStudents.models;
 
 namespace teachersAndStudents.API.Controllers
 {

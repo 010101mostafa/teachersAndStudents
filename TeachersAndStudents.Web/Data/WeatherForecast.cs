@@ -1,6 +1,6 @@
 using System;
 
-namespace teachersAndStudents.API.Entitys
+namespace TeachersAndStudents.Web.Data
 {
     public class WeatherForecast
     {

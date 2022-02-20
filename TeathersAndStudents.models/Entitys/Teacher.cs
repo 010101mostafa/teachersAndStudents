@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace teachersAndStudents.API.Entitys
+namespace TeachersAndStudents.models
 {
     public class Teacher
     {

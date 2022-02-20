@@ -1,7 +1,7 @@
 ﻿
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using teachersAndStudents.API.Entitys;
+using TeachersAndStudents.models;
 
 namespace teachersAndStudents.API
 {
