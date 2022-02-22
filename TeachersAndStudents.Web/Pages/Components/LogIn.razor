@@ -15,7 +15,7 @@
     </div>
         <div class="form-group">
         <label for="exampleInputPassword1">Password</label>
-        <input @bind="Model.password" @onfocus="(()=>{hasError = false;})" type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+        <input @bind="Model.password" @onfocus="(()=>{Error.HaveError = false;})" type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
     </div>
         <div class="form-group form-check">
         <input @bind-value="Model.RememberMe" type="checkbox" class="form-check-input">
@@ -23,10 +23,10 @@
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
 </EditForm>
-    @if (hasError)
+    @if (Error.HaveError)
     {
         <div class="alert alert-danger" role="alert">
-            the username or pass is incorrect
+            @Error.Message
         </div>
     }
 }

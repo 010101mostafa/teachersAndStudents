@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using TeachersAndStudents.models;
 using TeachersAndStudents.Web.Services;
 using System.Linq;
+using System;
 namespace TeachersAndStudents.Web.Pages
 {
     public class StudentsBase:ComponentBase
@@ -21,28 +22,45 @@ namespace TeachersAndStudents.Web.Pages
 
         public Empty empty { get; set; }
 
-        protected bool hasError { get; set; }
+        protected ERROR Error { get; set; }= new ERROR();
         protected override async void OnParametersSet()
         {
             base.OnParametersSet();
-            Model = (List<StudentView>)await services.getStudent();
-           var _Class = await services.getClass();
-            if (_Class is not null)
-                foreach (var c in _Class)
-                    _class.Add(c.Name);
-            user = (await authState).User;
+            try
+            {
+                Model = (List<StudentView>)await services.getStudent();
+                var _Class = await services.getClass();
+
+                if (_Class is not null)
+                    foreach (var c in _Class)
+                        _class.Add(c.Name);
+            }
+            catch (Exception e) { 
+                Error.HaveError = true;
+                Error.Message = e.Message; 
+            }
+            if (authState is not null)
+                user = (await authState).User;
         }
         public async Task onSubmitAsync()
         {
-            var _Class = (List<Class>)await services.getClass();
-            var s_Class = _Class.FirstOrDefault(x => x.Name == selectedClass);
-            var students = Model.FindAll(s => s.selected).ConvertAll(s => (Student)s);
-            if (students is not null)
-                foreach (var s in students)
-                {
-                    s.Class = s_Class;
-                    hasError = !await services.AddToAClass(s);
-                }
+            try
+            {
+                var _Class = (List<Class>)await services.getClass();
+                var s_Class = _Class.FirstOrDefault(x => x.Name == selectedClass);
+                var students = Model.FindAll(s => s.selected).ConvertAll(s => (Student)s);
+                if (students is not null)
+                    foreach (var s in students)
+                    {
+                        s.Class = s_Class;
+                        await services.AddToAClass(s);
+                    }
+            }
+            catch (Exception e)
+            {
+                Error.HaveError = true;
+                Error.Message=e.Message;
+            }
         }
     }
 }

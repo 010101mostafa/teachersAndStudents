@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using teachersAndStudents.API.Models;
 using TeachersAndStudents.models;
-
+using System;
 namespace teachersAndStudents.API.Controllers
 {
 
@@ -39,9 +39,9 @@ namespace teachersAndStudents.API.Controllers
             {
                 return Ok(await account.addUser(user, myuser, model.password,model.Role));
             }
-            catch (System.Exception)
+            catch (Exception e)
             {
-                return BadRequest(new { massage = "server Error" });
+                return BadRequest(e.Message);
             }
         }
         [HttpPost]
@@ -55,10 +55,9 @@ namespace teachersAndStudents.API.Controllers
             {
                 return Ok(await account.Login(model.UserName, model.password));
             }
-            catch (System.Exception)
+            catch (Exception e)
             {
-                ModelState.AddModelError("massage", " البريد الإلكترونى أو كلمة السر غير صحيحة ");
-                return BadRequest(ModelState);
+               return BadRequest(e.Message);
             }
         }
         [HttpGet][Authorize]

@@ -30,7 +30,7 @@ namespace teachersAndStudents.API.Controllers
                 return Ok();
             }
             catch (Exception e) {
-                return BadRequest();
+                return BadRequest(e.Message);
             }
         }
         [HttpPost("AddToAClass")]
@@ -47,7 +47,7 @@ namespace teachersAndStudents.API.Controllers
             }
             catch (Exception e)
             {
-                return BadRequest();
+                return BadRequest(e.Message);
             }
         }
         [HttpGet("getClass")]
@@ -64,7 +64,7 @@ namespace teachersAndStudents.API.Controllers
             }
             catch (Exception e)
             {
-                return BadRequest();
+                return BadRequest(e.Message);
             }
         }
         [HttpGet("getStudent")]
@@ -76,7 +76,7 @@ namespace teachersAndStudents.API.Controllers
             }
             catch (Exception e)
             {
-                return BadRequest();
+                return BadRequest(e.Message);
             }
         }
     }

@@ -1,7 +1,7 @@
 ﻿@page "/signUp"
 @inherits SignUpBase
 <h3>Sign Up</h3>
- <EditForm Model="@Model" OnValidSubmit="@onSubmitAsync">
+ <EditForm Model="@Model" @onfocus="()=>{Error.HaveError=false;}" OnValidSubmit="@onSubmitAsync">
     <DataAnnotationsValidator />
     <div class="form-group">
         <ValidationSummary />
@@ -43,9 +43,9 @@
         <ValidationSummary />
     </div>
 </EditForm>>
- @if (hasError)
+ @if (Error.HaveError)
 {
     <div class="alert alert-danger" role="alert">
-        There is something wrong Try again
+        @Error.Message
     </div>
 }

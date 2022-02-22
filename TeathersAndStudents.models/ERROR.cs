@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace TeachersAndStudents.models
 {
-    internal class ERROR
+    public class ERROR
     {
-        public List<string> message { get; set; }
+        public bool HaveError { get; set; }
+        public string Message { get; set; }
     }
 }

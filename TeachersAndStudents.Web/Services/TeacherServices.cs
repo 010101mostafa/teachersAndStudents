@@ -7,14 +7,15 @@ using Blazored.LocalStorage;
 using Blazored.SessionStorage;
 using System;
 using System.Net.Http.Headers;
+using System.Net;
 
 namespace TeachersAndStudents.Web.Services
 {
     public interface ITeacherServices
     {
-        public Task<IEnumerable<StudentView>> getStudent();
-        public Task<bool> AddToAClass(Student student);
-        public Task<bool> addClass(Class _class);
+        public Task<List<StudentView>> getStudent();
+        public Task AddToAClass(Student student);
+        public Task addClass(Class _class);
         public Task<IEnumerable<Class>> getClass();
     }
     public class TeacherServices : ITeacherServices
@@ -48,50 +49,48 @@ namespace TeachersAndStudents.Web.Services
             }
         }
 
-        public async Task<bool> addClass(Class _class)
+        public async Task addClass(Class _class)
         {
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await GetToke());
 
             var res = await httpClient.PostAsJsonAsync<Class>("/Teacher/addClass", _class);
-            if (res.IsSuccessStatusCode)
-                return true;
-            return false;
+            if (res.StatusCode == HttpStatusCode.BadRequest)
+                throw new Exception(await res.Content.ReadAsStringAsync());
+            if (!res.IsSuccessStatusCode)
+                throw new Exception("StatusCode :" + res.StatusCode);
         }
 
-        public async Task<bool> AddToAClass(Student student)
+        public async Task AddToAClass(Student student)
         {
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await GetToke());
             var res = await httpClient.PostAsJsonAsync("/Teacher/AddToAClass", student);
-            if (res.IsSuccessStatusCode)
-                return true;
-            return false;
+            if (res.StatusCode == HttpStatusCode.BadRequest)
+                throw new Exception(await res.Content.ReadAsStringAsync());
+            if (!res.IsSuccessStatusCode)
+                throw new Exception("StatusCode :" + res.StatusCode);
         }
 
         public async Task<IEnumerable<Class>> getClass()
         {
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await GetToke());
-            try
-            {
-                return await httpClient.GetFromJsonAsync<IEnumerable<Class>>("/Teacher/getClass");
-            }
-            catch (Exception)
-            {
-                return null;
-            }
+            var res = await httpClient.GetAsync("/Teacher/getClass");
+            if (res.StatusCode == HttpStatusCode.BadRequest)
+                throw new Exception(await res.Content.ReadAsStringAsync());
+            if (!res.IsSuccessStatusCode)
+                throw new Exception("StatusCode :" + res.StatusCode);
+            return await res.Content.ReadFromJsonAsync<IEnumerable<Class>>();
         }
 
-        public async Task<IEnumerable<StudentView>> getStudent()
+        public async Task<List<StudentView>> getStudent()
         {
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await GetToke());
-            try
-            {
-                var res=await httpClient.GetFromJsonAsync<List<Student>>("/Teacher/getStudent");
-                return res.ConvertAll(x => (StudentView)x);
-            }
-            catch (Exception)
-            {
-                return null;
-            }
+            var res = await httpClient.GetAsync("/Teacher/getStudent");
+            if (res.StatusCode == HttpStatusCode.BadRequest)
+                throw new Exception(await res.Content.ReadAsStringAsync());
+            if (!res.IsSuccessStatusCode)
+                throw new Exception("StatusCode :" + res.StatusCode);
+            var ans= (await res.Content.ReadFromJsonAsync<List<Student>>());
+            return ans.ConvertAll(x => (StudentView)x);
         }
     }
 }

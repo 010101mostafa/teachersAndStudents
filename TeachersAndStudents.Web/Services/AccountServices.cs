@@ -3,6 +3,8 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using TeachersAndStudents.models;
+using System;
+using System.Net;
 
 namespace TeachersAndStudents.Web.Services
 {
@@ -18,9 +20,11 @@ namespace TeachersAndStudents.Web.Services
             this.httpClient = httpClient;
         }
         public async Task<string> LogIn(Login model) {
-            var res = await httpClient.PostAsJsonAsync<Login>("/Account", model);
+            var res = await httpClient.PostAsJsonAsync("/Account", model);
+            if (res.StatusCode== HttpStatusCode.BadRequest) 
+                 throw new Exception( await res.Content.ReadAsStringAsync());
             if (!res.IsSuccessStatusCode)
-                return null;
+                throw new Exception("StatusCode :"+res.StatusCode);
             return await res.Content.ReadAsStringAsync();
            
         }
@@ -28,8 +32,10 @@ namespace TeachersAndStudents.Web.Services
         public async Task<string> SinUp(SignUp model)
         {
             var res = await httpClient.PostAsJsonAsync<Login>("/Account/SignUp", model);
+            if (res.StatusCode == HttpStatusCode.BadRequest)
+                throw new Exception(await res.Content.ReadAsStringAsync());
             if (!res.IsSuccessStatusCode)
-                return null;
+                throw new Exception("StatusCode :" + res.StatusCode);
             return await res.Content.ReadAsStringAsync();
         }
     }

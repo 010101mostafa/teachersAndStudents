@@ -46,7 +46,7 @@ namespace teachersAndStudents.API.Models
             var user = await userManager.FindByNameAsync(UserName);
             if (user==null || !await userManager.CheckPasswordAsync(user, Password))
             {
-                return null;
+                throw new System.Exception("the username or password is incorrect");
             }
             return await authService.CreateJwtToken(user);
             }

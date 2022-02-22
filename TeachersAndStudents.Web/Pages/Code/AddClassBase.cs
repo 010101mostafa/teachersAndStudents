@@ -6,6 +6,7 @@ using TeachersAndStudents.models;
 using Microsoft.AspNetCore.Components.Authorization;
 using System.Security.Claims;
 using TeachersAndStudents.Web.Services;
+using System;
 
 namespace TeachersAndStudents.Web.Pages
 {
@@ -17,17 +18,25 @@ namespace TeachersAndStudents.Web.Pages
         private Task<AuthenticationState> authState { get; set; }
         protected ClaimsPrincipal user { get; set; }
 
-        protected bool hasError { get; set; }
+        protected ERROR Error { get; set; }=new ERROR();
         protected override async void OnParametersSet()
         {
             base.OnParametersSet();
-            user = (await authState).User;
+            if (authState is not null)
+                user = (await authState).User;
         }
         public async Task onSubmitAsync()
         {
             Model.TeacherId= user.FindFirst("uid").Value;
-            hasError = !(await services.addClass(Model));
-
+            try
+            {
+                await services.addClass(Model);
+            }
+            catch (Exception e)
+            {
+                Error.HaveError = true;
+                Error.Message = e.Message;
+            }
             Model=new Class();
         }
     }

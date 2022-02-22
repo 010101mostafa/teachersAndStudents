@@ -1,6 +1,7 @@
 ﻿using Blazored.LocalStorage;
 using Blazored.SessionStorage;
 using Microsoft.AspNetCore.Components;
+using System;
 using System.Threading.Tasks;
 using TeachersAndStudents.models;
 using TeachersAndStudents.Web.Services;
@@ -20,28 +21,31 @@ namespace TeachersAndStudents.Web.Pages
         protected NavigationManager navigationManager { get; set; }
         [Parameter] public string returnUri { get; set; }
 
-        protected bool hasError { get; set; }
+        protected ERROR Error { get; set; }= new ERROR();
         public async Task onSubmitAsync() {
-            var token=await account.LogIn(Model);
-            if (token is "" or null)
-            {
-                hasError = true;
-            }
-            else
-            {
-                if (Model.RememberMe)
+            try {
+                var token = await account.LogIn(Model);
+                if (token is not "" or null)
                 {
-                    await local.SetItemAsync("Token", token);
+                    if (Model.RememberMe)
+                    {
+                        await local.SetItemAsync("Token", token);
+                    }
+                    else {
+                        await session.SetItemAsync("Token", token);
+                    }
+                    if (returnUri is null)
+                        navigationManager.NavigateTo("/", true);
+                    else
+                        navigationManager.NavigateTo(returnUri, true);
                 }
-                else {
-                    await session.SetItemAsync("Token", token);
-                }
-                if (returnUri is null)
-                    navigationManager.NavigateTo("/",true);
-                else
-                    navigationManager.NavigateTo(returnUri,true);
 
-        }
+            }
+            catch (Exception e) 
+            {
+                Error.HaveError = true;
+                Error.Message = e.Message;
+            }
         }
     }
 }

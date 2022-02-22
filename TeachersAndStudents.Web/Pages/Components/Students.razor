@@ -29,9 +29,9 @@
     }
 </div>
 
- @if (hasError){
+ @if (Error.HaveError){
         <div class="alert alert-danger" role="alert">
-            No change has been made
+            @Error.Message
         </div>
     }
 
