@@ -6,7 +6,8 @@
 <h4>Welcome to the App </h4>
 
 
-<SurveyPrompt Title="@(new string[]{ user.FindFirst("sub").Value,user.FindFirst("roles").Value })" />
+    <SurveyPrompt Title="@(new string[]{ user.FindFirst("sub").Value, user.FindFirst(ClaimTypes.Role).Value })" />
+
 @code{
     [CascadingParameter]
     private Task<AuthenticationState> authState { get; set; }
@@ -16,7 +17,6 @@
         base.OnParametersSet();
         if (authState is not null)
             user = (await authState).User;
-
     }
 
 }

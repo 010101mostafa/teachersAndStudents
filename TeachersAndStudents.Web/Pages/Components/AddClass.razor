@@ -1,5 +1,6 @@
 ﻿@page "/Classroom"
 @inherits AddClassBase
+@attribute [Authorize(Roles ="Teacher")]
 <h3>Add Classroom</h3>
  <EditForm Model="@Model" OnValidSubmit="@onSubmitAsync">
     <DataAnnotationsValidator />

@@ -33,14 +33,6 @@ namespace teachersAndStudents.API.Models
                 throw new Exception(errors);
             }
             myuser.UserId= (await userManager.FindByNameAsync(user.UserName)).Id;
-            result=await userManager.AddToRoleAsync(user, "Student");
-            if (!result.Succeeded)
-            {
-                var errors = "";
-                foreach (var e in result.Errors)
-                    errors += " " + e.Description;
-                throw new Exception(errors);
-            }
             if (role == ERole.Student)
             {
                 await appDbContext.Students.AddAsync(new Student { 
@@ -57,6 +49,7 @@ namespace teachersAndStudents.API.Models
                 });
                 await userManager.AddToRoleAsync(user, "Teacher");
             }
+            await userManager.AddToRoleAsync(user, "Student");
             await appDbContext.SaveChangesAsync();
             return await authService.CreateJwtToken(user);
         }

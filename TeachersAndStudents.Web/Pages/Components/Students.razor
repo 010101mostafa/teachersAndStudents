@@ -1,6 +1,6 @@
 ﻿@inherits StudentsBase
 @page "/Students"
-
+@attribute [Authorize(Roles ="Teacher")]
 @if(_class is not null && Model is not null){
 <div class="card  min-vh-100 w-100">
     <div class="card-body" style="overflow-y: scroll;">
