@@ -31,7 +31,7 @@ namespace TeachersAndStudents.Web.Services
 
         public async Task<string> SinUp(SignUp model)
         {
-            var res = await httpClient.PostAsJsonAsync<Login>("/Account/SignUp", model);
+            var res = await httpClient.PostAsJsonAsync("/Account/SignUp", model);
             if (res.StatusCode == HttpStatusCode.BadRequest)
                 throw new Exception(await res.Content.ReadAsStringAsync());
             if (!res.IsSuccessStatusCode)

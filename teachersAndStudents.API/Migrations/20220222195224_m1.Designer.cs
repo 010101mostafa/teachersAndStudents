@@ -10,7 +10,7 @@ using teachersAndStudents.API;
 namespace teachersAndStudents.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220222044305_m1")]
+    [Migration("20220222195224_m1")]
     partial class m1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

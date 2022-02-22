@@ -53,7 +53,7 @@ namespace TeachersAndStudents.Web.Services
         {
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", await GetToke());
 
-            var res = await httpClient.PostAsJsonAsync<Class>("/Teacher/addClass", _class);
+            var res = await httpClient.PostAsJsonAsync("/Teacher/addClass", _class);
             if (res.StatusCode == HttpStatusCode.BadRequest)
                 throw new Exception(await res.Content.ReadAsStringAsync());
             if (!res.IsSuccessStatusCode)

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Threading.Tasks;
 using teachersAndStudents.API.Services;
 using TeachersAndStudents.models;
@@ -26,17 +27,34 @@ namespace teachersAndStudents.API.Models
             var result = await userManager.CreateAsync(user, Password);
             if (!result.Succeeded)
             {
-                throw new System.Exception(result.Errors.ToString());
+                var errors = "";
+                foreach (var e in result.Errors)
+                    errors += " " + e.Description;
+                throw new Exception(errors);
             }
             myuser.UserId= (await userManager.FindByNameAsync(user.UserName)).Id;
-            await userManager.AddToRoleAsync(user, "Student");
+            result=await userManager.AddToRoleAsync(user, "Student");
+            if (!result.Succeeded)
+            {
+                var errors = "";
+                foreach (var e in result.Errors)
+                    errors += " " + e.Description;
+                throw new Exception(errors);
+            }
             if (role == ERole.Student)
             {
-                await appDbContext.Students.AddAsync((Student)myuser);
+                await appDbContext.Students.AddAsync(new Student { 
+                    FullName = myuser.FullName,
+                    UserId=myuser.UserId,
+                });
             }
             else if (role == ERole.Teacher)
             {
-                await appDbContext.Teachers.AddAsync((Teacher)myuser);
+                await appDbContext.Teachers.AddAsync(new Teacher
+                {
+                    FullName = myuser.FullName,
+                    UserId = myuser.UserId,
+                });
                 await userManager.AddToRoleAsync(user, "Teacher");
             }
             await appDbContext.SaveChangesAsync();
