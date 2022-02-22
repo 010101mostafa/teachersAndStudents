@@ -39,10 +39,12 @@ namespace TeachersAndStudents.Web
             services.AddHttpClient<IAccountServices, AccountServices>(o => {
                 o.BaseAddress = new Uri(Configuration["ApiUrl"]);
             });
+            services.AddHttpClient<ITeacherServices, TeacherServices>(o => {
+                o.BaseAddress = new Uri(Configuration["ApiUrl"]);
+            });
             services.AddBlazoredLocalStorage();
             services.AddBlazoredSessionStorage();
             services.AddScoped<AuthenticationStateProvider, MyAuthenticationStateProvider>();
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

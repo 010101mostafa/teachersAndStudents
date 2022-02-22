@@ -1,0 +1,43 @@
+﻿@inherits StudentsBase
+@page "/Students"
+
+@if(_class is not null && Model is not null){
+<div class="card  min-vh-100 w-100">
+    <div class="card-body" style="overflow-y: scroll;">
+        @foreach (var m in Model){
+        <div class="alert alert-secondary mt-4" role="alert">
+            <input @{}bind=m.selected @{}onclick="()=>{selectedNum++;}" type="checkbox" class="col-1" />
+            <strong class="col-3"> @m.FullName |</strong>
+            <strong class="col-2"> @m.user.UserName |</strong>
+            <strong class="col-3"> @m.user.Email | </strong>
+            <strong class="col-3"> @m.Class.Name |</strong>
+        </div>
+        }
+    </div> 
+    @if(selectedNum>0){
+    <div class="card-footer">
+        <div class="form-group row">
+            <label class="col-3 ">the class name:</label>
+            <select @{}bind="selectedClass" class="col-7">
+                @foreach(var t in _class){
+                <option @value="t" > @t </option>
+                }
+            </select>
+            <button type="submit" @onsubmit="onSubmitAsync" class="col-2 btn btn-primary">Submit</button>
+        </div>
+    </div>
+    }
+</div>
+
+ @if (hasError){
+        <div class="alert alert-danger" role="alert">
+            No change has been made
+        </div>
+    }
+
+}
+else{
+    <div class="spinner-grow text-primary " style="width:7em;height:7em;" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+}

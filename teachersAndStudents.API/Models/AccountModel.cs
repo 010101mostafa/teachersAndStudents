@@ -1,7 +1,4 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using teachersAndStudents.API.Services;
 using TeachersAndStudents.models;
@@ -10,10 +7,8 @@ namespace teachersAndStudents.API.Models
 {
     public interface IAccountModel
     {
-        public Task<string> addStudent(IdentityUser user, Student student, string Password);
-        public Task<string> addTeacher(IdentityUser user, Teacher teacher, string Password);
+        public Task<string> addUser(IdentityUser user, User myuser, string Password, ERole role);
         public Task<string> Login(string UserName, string Password);
-        public Task<IEnumerable<Student>> GetStudents();
     }
     public class AccountModel: IAccountModel
     {
@@ -26,38 +21,27 @@ namespace teachersAndStudents.API.Models
             this.authService = authService;
             this.appDbContext = appDbContext;
         }
-        public async Task<string> addStudent(IdentityUser user, Student student, string Password) {
+        public async Task<string> addUser(IdentityUser user, User myuser, string Password,ERole role) {
             await authService.addRoles();
             var result = await userManager.CreateAsync(user, Password);
             if (!result.Succeeded)
             {
                 throw new System.Exception(result.Errors.ToString());
             }
-            await appDbContext.Students.AddAsync(student);
+            myuser.UserId= (await userManager.FindByNameAsync(user.UserName)).Id;
             await userManager.AddToRoleAsync(user, "Student");
-            await appDbContext.SaveChangesAsync();
-            return await authService.CreateJwtToken(user);
-        }
-        public async Task<string> addTeacher(IdentityUser user, Teacher teacher, string Password)
-        {
-            await authService.addRoles();
-            var result = await userManager.CreateAsync(user, Password);
-            if (!result.Succeeded)
+            if (role == ERole.Student)
             {
-                throw (System.Exception)result.Errors;
+                await appDbContext.Students.AddAsync((Student)myuser);
             }
-            await appDbContext.Teachers.AddAsync(teacher);
-            await userManager.AddToRoleAsync(user, "Teacher");
-            await userManager.AddToRoleAsync(user, "Student");
+            else if (role == ERole.Teacher)
+            {
+                await appDbContext.Teachers.AddAsync((Teacher)myuser);
+                await userManager.AddToRoleAsync(user, "Teacher");
+            }
             await appDbContext.SaveChangesAsync();
             return await authService.CreateJwtToken(user);
         }
-
-        public async Task<IEnumerable<Student>> GetStudents()
-        {
-            return await appDbContext.Students.ToListAsync();
-        }
-
         public async Task<string> Login(string UserName, string Password){
             var user = await userManager.FindByNameAsync(UserName);
             if (user==null || !await userManager.CheckPasswordAsync(user, Password))

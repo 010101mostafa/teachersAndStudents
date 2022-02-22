@@ -4,11 +4,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TeachersAndStudents.models
 {
-    public enum ERole
-    {
-        Student,
-        Teacher 
-    }
     public class SignUp: Login
     {
         [Required]

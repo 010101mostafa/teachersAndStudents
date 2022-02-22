@@ -1,0 +1,20 @@
+﻿@page "/Classroom"
+@inherits AddClassBase
+<h3>Add Classroom</h3>
+ <EditForm Model="@Model" OnValidSubmit="@onSubmitAsync">
+    <DataAnnotationsValidator />
+    <div class="form-group">
+        <ValidationSummary />
+    </div>
+    <div class="form-group">
+        <label >the class name :</label>
+        <input @bind-value="Model.Name" class="form-control"  placeholder="e.g. mathematics">
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</EditForm>
+ @if (hasError)
+    {
+        <div class="alert alert-danger" role="alert">
+            Error the classroom not added
+        </div>
+    }

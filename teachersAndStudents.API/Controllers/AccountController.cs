@@ -31,39 +31,18 @@ namespace teachersAndStudents.API.Controllers
                 UserName = model.UserName,
                 Email = model.Email,
             };
-            if (model.Role == ERole.Student)
+            var myuser = new User
             {
-                var student = new Student
-                {
-                    UserId = user.Id,
-                    FullName = model.FullName,
-                };
-                try
-                {
-                    return Ok(await account.addStudent(user,student,model.password));
-                }
-                catch (System.Exception)
-                {
-                    return BadRequest(new { massage = "server Error" });
-                }
+                FullName = model.FullName,
+            };
+            try
+            {
+                return Ok(await account.addUser(user, myuser, model.password,model.Role));
             }
-            else if (model.Role == ERole.Teacher) {
-                var teacher = new Teacher
-                {
-                    UserId = user.Id,
-                    FullName = model.FullName,
-                };
-                try
-                {
-                    return Ok(await account.addTeacher(user, teacher, model.password));
-                }
-                catch (System.Exception)
-                {
-                    return BadRequest(new { massage = "server Error" });
-                }
+            catch (System.Exception)
+            {
+                return BadRequest(new { massage = "server Error" });
             }
-            else
-                return BadRequest(new { massage = "select a valid role" });
         }
         [HttpPost]
         public async Task<IActionResult> Login(Login model)

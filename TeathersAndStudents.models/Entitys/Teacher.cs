@@ -1,13 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
-
+﻿using System.Collections.Generic;
 namespace TeachersAndStudents.models
 {
-    public class Teacher
+    public class Teacher : User
     {
-        [Key]
-        [Required]
-        public string UserId { get; set; }
-        [MaxLength(60)]
-        public string FullName { get; set; }
+        // Relations
+        public IList<Class> Class { get; set; }
     }
 }

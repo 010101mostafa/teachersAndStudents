@@ -24,7 +24,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <_ContentIncludedByDefault Remove="Shared\Loading.razor" />
     <_ContentIncludedByDefault Remove="Shared\Logout.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Shared\Loading.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Shared\Loading.razor" />
   </ItemGroup>
 
 </Project>

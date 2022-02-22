@@ -8,8 +8,7 @@
     </div>
   <div class="form-group">
     <label> Account Type </label>
-    <InputSelect @bind-Value="Model.Role" class=" custom-select">
-      <option value="" selected> Select your Role</option>
+    <InputSelect @bind-Value="Model.Role" class=" custom-select" title="Select your Role">
       <option value="Student" >Student</option>
       <option value="Teacher" >Teacher</option>
     </InputSelect>
@@ -47,6 +46,6 @@
  @if (hasError)
 {
     <div class="alert alert-danger" role="alert">
-        the username or pass is incorrect
+        There is something wrong Try again
     </div>
 }

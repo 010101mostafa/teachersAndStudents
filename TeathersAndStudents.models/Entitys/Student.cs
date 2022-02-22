@@ -1,15 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
-
+﻿
 namespace TeachersAndStudents.models
 {
-    public class Student
+    public class Student:User
     {
-        [Key]
-        [Required]
-        public string UserId { get; set; }
-        [MaxLength(60)]
-        public string FullName { get; set; }
-        public string ClassId { get; set; }
-
+        // Relations
+        public Class Class { get; set; }
     }
 }

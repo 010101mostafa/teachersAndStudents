@@ -10,7 +10,7 @@ using teachersAndStudents.API;
 namespace teachersAndStudents.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220218015401_m1")]
+    [Migration("20220222044305_m1")]
     partial class m1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -217,26 +217,32 @@ namespace teachersAndStudents.API.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("teachersAndStudents.API.Entitys.Class", b =>
+            modelBuilder.Entity("TeachersAndStudents.models.Class", b =>
                 {
-                    b.Property<string>("ClassId")
+                    b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("TeacherId")
+                    b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("ClassId");
+                    b.Property<string>("TeacherId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TeacherId");
 
                     b.ToTable("Class");
                 });
 
-            modelBuilder.Entity("teachersAndStudents.API.Entitys.Student", b =>
+            modelBuilder.Entity("TeachersAndStudents.models.Student", b =>
                 {
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ClassId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("FullName")
                         .HasMaxLength(60)
@@ -244,10 +250,12 @@ namespace teachersAndStudents.API.Migrations
 
                     b.HasKey("UserId");
 
+                    b.HasIndex("ClassId");
+
                     b.ToTable("Students");
                 });
 
-            modelBuilder.Entity("teachersAndStudents.API.Entitys.Teacher", b =>
+            modelBuilder.Entity("TeachersAndStudents.models.Teacher", b =>
                 {
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
@@ -310,6 +318,53 @@ namespace teachersAndStudents.API.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("TeachersAndStudents.models.Class", b =>
+                {
+                    b.HasOne("TeachersAndStudents.models.Teacher", "Teacher")
+                        .WithMany("Class")
+                        .HasForeignKey("TeacherId");
+
+                    b.Navigation("Teacher");
+                });
+
+            modelBuilder.Entity("TeachersAndStudents.models.Student", b =>
+                {
+                    b.HasOne("TeachersAndStudents.models.Class", "Class")
+                        .WithMany("students")
+                        .HasForeignKey("ClassId");
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "user")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Class");
+
+                    b.Navigation("user");
+                });
+
+            modelBuilder.Entity("TeachersAndStudents.models.Teacher", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "user")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("user");
+                });
+
+            modelBuilder.Entity("TeachersAndStudents.models.Class", b =>
+                {
+                    b.Navigation("students");
+                });
+
+            modelBuilder.Entity("TeachersAndStudents.models.Teacher", b =>
+                {
+                    b.Navigation("Class");
                 });
 #pragma warning restore 612, 618
         }

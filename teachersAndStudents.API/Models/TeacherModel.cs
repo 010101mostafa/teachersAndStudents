@@ -1,14 +1,13 @@
 ﻿using System.Threading.Tasks;
 using TeachersAndStudents.models;
 using System.Collections.Generic;
-using System.Linq;
 using Microsoft.EntityFrameworkCore;
 
 namespace teachersAndStudents.API.Models
 {
     public interface ITeacherModel
     {
-        public Task<IEnumerable<Student>> getStudent();
+        public Task<List<Student>> getStudent();
         public Task AddToAClass(Student student);
         public Task addClass(Class _class);
         public Task<IEnumerable<Class>> getClass(string TeacherId);
@@ -23,24 +22,24 @@ namespace teachersAndStudents.API.Models
         public async Task addClass(Class _class)
         {
             await appDbContext.Class.AddAsync(_class);
-            await appDbContext.SaveChangesAsync();
+            await appDbContext.SaveChangesAsync(); 
         }
 
         public async Task AddToAClass(Student student)
         {
-            (await appDbContext.Students.FirstOrDefaultAsync(x=>x.UserId==student.UserId))
-                .ClassId = student.ClassId;
+            (await appDbContext.Students.FirstOrDefaultAsync(s => s.UserId == student.UserId)).Class=student.Class;
             await appDbContext.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<Class>> getClass(string TeacherId)
         {
-            return await appDbContext.Class.Where(x => x.TeacherId == TeacherId).ToArrayAsync();
+            return (await appDbContext.Teachers.Include(t => t.Class).FirstOrDefaultAsync(t => t.UserId == TeacherId)).Class;       
         }
 
-        public async Task<IEnumerable<Student>> getStudent()
+        public async Task<List<Student>> getStudent()
         {
-            return await appDbContext.Students.ToArrayAsync();
+            return await appDbContext.Students.Include(s => s.user).Include(s=>s.Class).ToListAsync();
+            
         }
     }
 }

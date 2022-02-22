@@ -1,0 +1,10 @@
+﻿
+@inject NavigationManager navigationManager
+@code{
+    [Parameter] public string returnUri { get; set; }
+    protected override void OnInitialized()
+    {
+        navigationManager.NavigateTo($"login/{navigationManager.ToBaseRelativePath(returnUri)}", true);
+    }
+
+}
