@@ -1,10 +1,24 @@
-﻿
+﻿@using System.Security.Claims
+@if (user is null)
+{
+    <Loading/>
+}
 @inject NavigationManager navigationManager
 @code{
-    [Parameter] public string returnUri { get; set; }
-    protected override void OnInitialized()
+    [Parameter] 
+    public string returnUri { get; set; }
+    [CascadingParameter]
+    private Task<AuthenticationState> authState { get; set; }
+    private ClaimsPrincipal user{ get; set; }
+    protected override async void OnParametersSet()
     {
-        navigationManager.NavigateTo($"login/{navigationManager.ToBaseRelativePath(returnUri)}", true);
+        base.OnParametersSet();
+        if (authState is not null)
+        {    
+            user = (await authState).User;
+            if (!user.Identity.IsAuthenticated)
+                navigationManager.NavigateTo($"login/{navigationManager.ToBaseRelativePath(returnUri)}");
+        }
     }
 
 }
