@@ -28,12 +28,14 @@ namespace TeachersAndStudents.Web.Pages
             base.OnParametersSet();
             try
             {
-                Model = (List<StudentView>)await services.getStudent();
+                Model =await services.getStudent();
                 var _Class = await services.getClass();
 
                 if (_Class is not null)
                     foreach (var c in _Class)
                         _class.Add(c.Name);
+                else
+                    throw new Exception("you don't have any classes please add the Class first and then add its students.");
             }
             catch (Exception e) { 
                 Error.HaveError = true;
@@ -47,12 +49,12 @@ namespace TeachersAndStudents.Web.Pages
             try
             {
                 var _Class = (List<Class>)await services.getClass();
-                var s_Class = _Class.FirstOrDefault(x => x.Name == selectedClass);
+                Class s_Class = _Class.FirstOrDefault(x => x.Name == selectedClass);
                 var students = Model.FindAll(s => s.selected).ConvertAll(s => (Student)s);
                 if (students is not null)
                     foreach (var s in students)
                     {
-                        s.Class = s_Class;
+                        s.ClassId = s_Class.Id;
                         await services.AddToAClass(s);
                     }
             }
@@ -61,6 +63,19 @@ namespace TeachersAndStudents.Web.Pages
                 Error.HaveError = true;
                 Error.Message=e.Message;
             }
+        }
+
+        public void onSelect(int i) {
+            if (!Model[i].selected && Model[i].ClassId is not null)
+            {
+                Error.HaveError = true;
+                Error.Message = $"this student :{Model[i].FullName} have a Class already!!";
+                Model[i].selected = false;
+            }
+            else if (Model[i].selected) 
+                selectedNum--;
+            else
+                selectedNum++;
         }
     }
 }

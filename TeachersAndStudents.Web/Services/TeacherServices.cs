@@ -90,7 +90,10 @@ namespace TeachersAndStudents.Web.Services
             if (!res.IsSuccessStatusCode)
                 throw new Exception("StatusCode :" + res.StatusCode);
             var ans= (await res.Content.ReadFromJsonAsync<List<Student>>());
-            return ans.ConvertAll(x => (StudentView)x);
+            return ans.ConvertAll(x => new StudentView { 
+                FullName= x.FullName,
+                Class= x.Class,
+                user= x.user,});
         }
     }
 }
