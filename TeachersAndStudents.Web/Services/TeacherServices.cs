@@ -32,21 +32,11 @@ namespace TeachersAndStudents.Web.Services
         }
 
         private async Task<string> GetToke() {
-            try
-            {
-                return await session.GetItemAsync<string>("Token");
-            }
-            catch (Exception)
-            {
-                try
-                {
+                if (await session.ContainKeyAsync("Token"))
+                    return await session.GetItemAsync<string>("Token");
+                else if (await local.ContainKeyAsync("Token"))
                     return await local.GetItemAsync<string>("Token");
-                }
-                catch (Exception)
-                {
-                    return "";
-                }
-            }
+                return "";
         }
 
         public async Task addClass(Class _class)

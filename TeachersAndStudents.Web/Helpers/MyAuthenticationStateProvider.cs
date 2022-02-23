@@ -35,23 +35,17 @@ namespace TeachersAndStudents.Web.Helpers
 
         private async Task<IEnumerable<Claim>> GetClaimsAsync()
         {
-            string token;
-            try
-            {
-                token = await session.GetItemAsync<string>("Token");
+            string token="";
+            try{
+                if(await session.ContainKeyAsync("Token"))
+                    token = await session.GetItemAsync<string>("Token");
+                else if (await local.ContainKeyAsync("Token"))
+                    token = await local.GetItemAsync<string>("Token");
                 return GetClaimsFromToken(token);
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                try
-                {
-                    token = await local.GetItemAsync<string>("Token");
-                    return GetClaimsFromToken(token);
-                }
-                catch (Exception ex)
-                {
-                    return null;
-                }
+                 return null;
             }
         }
 
