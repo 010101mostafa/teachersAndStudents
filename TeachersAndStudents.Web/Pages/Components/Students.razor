@@ -1,21 +1,22 @@
 ﻿@inherits StudentsBase
 @page "/Students"
 @attribute [Authorize(Roles ="Teacher")]
-@if(_class is not null && Model is not null){
 <div class="card  min-vh-100 w-100">
     <div class="card-body" style="overflow-y: scroll;">
+         
+        <PopMassage title="@Error.Message"/>
         @for(var i =0;i<Model.Count ; i++){
         <div class="alert alert-secondary mt-4" role="alert">
             <input @bind="Model[i].selected" @onclick="()=>onSelect(i)" type="checkbox" class="col-1" />
             <strong class="col-3"> @Model[i].FullName |</strong>
             <strong class="col-2"> @Model[i].user.UserName |</strong>
             <strong class="col-3"> @Model[i].user.Email | </strong>
-            <strong class="col-3"> @Model[i].Class.Name |</strong>
+            <!--strong class="col-3"> @Model[i].Class |</strong-->
         </div>
         }
     </div> 
     @if(selectedNum>0 && !Error.HaveError){
-    <div class="card-footer">
+    <div class="card-footer bg-info">
         <div class="form-group row">
             <label class="col-3 ">the class name:</label>
             <select @bind="selectedClass" class="col-7">
@@ -30,12 +31,5 @@
 </div>
 
  @if (Error.HaveError){
-        <div class="alert alert-danger" role="alert">
-            @Error.Message
-        </div>
+        <PopMassage body="@Error.Message" title="server Error" ></PopMassage>
     }
-
-}
-else{
-    <Loading/>
-}

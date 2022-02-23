@@ -23,9 +23,8 @@ namespace TeachersAndStudents.Web.Pages
         public Empty empty { get; set; }
 
         protected ERROR Error { get; set; }= new ERROR();
-        protected override async void OnParametersSet()
+        protected override async Task OnParametersSetAsync()
         {
-            base.OnParametersSet();
             try
             {
                 Model =await services.getStudent();

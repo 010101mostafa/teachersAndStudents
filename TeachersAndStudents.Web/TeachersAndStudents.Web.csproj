@@ -26,6 +26,7 @@
   <ItemGroup>
     <_ContentIncludedByDefault Remove="Shared\Loading.razor" />
     <_ContentIncludedByDefault Remove="Shared\Logout.razor" />
+    <_ContentIncludedByDefault Remove="Shared\PopMassage.razor" />
   </ItemGroup>
 
   <ItemGroup>
@@ -34,6 +35,10 @@
 
   <ItemGroup>
     <None Include="Shared\Loading.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Shared\PopMassage.razor" />
   </ItemGroup>
 
 </Project>
