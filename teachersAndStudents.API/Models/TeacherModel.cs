@@ -27,7 +27,11 @@ namespace teachersAndStudents.API.Models
 
         public async Task AddToAClass(Student student)
         {
-            (await appDbContext.Students.FirstOrDefaultAsync(s => s.UserId == student.UserId)).Class=student.Class;
+            var s = await appDbContext.Students.FirstOrDefaultAsync(s => s.UserId == student.UserId);
+            if (s.ClassId == default(string))
+                s.ClassId = student.ClassId;
+            else
+                throw new System.Exception($"the student {s.FullName}is already in a Class");
             await appDbContext.SaveChangesAsync();
         }
 

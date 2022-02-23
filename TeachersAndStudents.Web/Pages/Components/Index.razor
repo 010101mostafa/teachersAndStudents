@@ -6,7 +6,7 @@
 <h4>Welcome to the App </h4>
 
 
-    <SurveyPrompt Title="@(new string[]{ user.FindFirst("sub").Value, user.FindFirst(ClaimTypes.Role).Value })" />
+    <SurveyPrompt Title="@(new string[]{ user.FindFirst("sub").Value, user.FindAll(ClaimTypes.Role).Last().Value })" />
 
 @code{
     [CascadingParameter]

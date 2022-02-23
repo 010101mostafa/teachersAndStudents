@@ -5,5 +5,6 @@ namespace TeachersAndStudents.models
     {
         // Relations
         public Class Class { get; set; }
+        public string ClassId { get; set; }
     }
 }

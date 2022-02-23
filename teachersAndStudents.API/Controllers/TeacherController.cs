@@ -26,6 +26,7 @@ namespace teachersAndStudents.API.Controllers
             }
             try
             {
+                _class.TeacherId=HttpContext.User.FindFirst("uid").Value;
                 await teacherModel.addClass(_class);
                 return Ok();
             }
