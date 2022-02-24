@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.Authorization;
 using System.Collections.Generic;
 using System.Security.Claims;
@@ -12,29 +13,21 @@ namespace TeachersAndStudents.Web.Pages
     public class StudentsBase:ComponentBase
     {
         protected List<StudentView> Model = new List<StudentView>();
-        protected List<string> _class = new List<string>();
+        protected List<Class> _classes = new List<Class>();
         protected string selectedClass = "";
         protected int selectedNum = 0;
         [Inject] protected ITeacherServices services { get; set; }
         [CascadingParameter]
         private Task<AuthenticationState> authState { get; set; }
         protected ClaimsPrincipal user{ get; set; }
-
-        public Empty empty { get; set; }
-
         protected ERROR Error { get; set; }= new ERROR();
+
         protected override async Task OnParametersSetAsync()
         {
             try
             {
                 Model =await services.getStudent();
-                var _Class = await services.getClass();
-
-                if (_Class is not null)
-                    foreach (var c in _Class)
-                        _class.Add(c.Name);
-                else
-                    throw new Exception("you don't have any classes please add the Class first and then add its students.");
+                _classes = (List<Class>)await services.getClass();
             }
             catch (Exception e) { 
                 Error.HaveError = true;
@@ -47,11 +40,13 @@ namespace TeachersAndStudents.Web.Pages
         {
             try
             {
-                var _Class = (List<Class>)await services.getClass();
-                Class s_Class = _Class.FirstOrDefault(x => x.Name == selectedClass);
+                if(_classes.Count==0)
+                    throw new Exception("you don't have any classes please add a Class first and then add its students.");
+                if(selectedClass=="")
+                    throw new Exception("Please select a class");
+                Class s_Class = _classes.FirstOrDefault(x => x.Name == selectedClass);
                 var students = Model.FindAll(s => s.selected).ConvertAll(s => (Student)s);
-                if (students is not null)
-                    foreach (var s in students)
+                foreach (var s in students)
                     {
                         s.ClassId = s_Class.Id;
                         await services.AddToAClass(s);
@@ -64,14 +59,14 @@ namespace TeachersAndStudents.Web.Pages
             }
         }
 
-        public void onSelect(int i) {
-            if (!Model[i].selected && Model[i].ClassId is not null)
+        public void onSelect(StudentView s) {
+            if (s.selected && s.ClassId is not null)
             {
                 Error.HaveError = true;
-                Error.Message = $"this student :{Model[i].FullName} have a Class already!!";
-                Model[i].selected = false;
+                Error.Message = $"this student :{s.FullName} have a Class already!!";
+                s.selected = false;
             }
-            else if (Model[i].selected) 
+            else if (s.selected) 
                 selectedNum--;
             else
                 selectedNum++;

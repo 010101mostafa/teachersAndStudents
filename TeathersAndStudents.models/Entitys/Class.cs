@@ -6,6 +6,7 @@ namespace TeachersAndStudents.models
     public class Class
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string Id { get; set; }
         [Required]
         public string Name { get; set; }
@@ -14,6 +15,6 @@ namespace TeachersAndStudents.models
         [ForeignKey("Teacher")]
         public string TeacherId { get; set; }
         public Teacher Teacher { get; set; }
-        public IList<Student> students { get; set; }
+        public IEnumerable<Student> students { get; set; }
     }
 }

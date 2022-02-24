@@ -83,7 +83,10 @@ namespace TeachersAndStudents.Web.Services
             return ans.ConvertAll(x => new StudentView { 
                 FullName= x.FullName,
                 Class= x.Class,
-                user= x.user,});
+                user= x.user,
+                ClassId= x.ClassId,
+                UserId= x.UserId,
+            });
         }
     }
 }

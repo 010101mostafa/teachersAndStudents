@@ -13,6 +13,7 @@ using Microsoft.OpenApi.Models;
 using teachersAndStudents.API.Helpers;
 using teachersAndStudents.API.Models;
 using teachersAndStudents.API.Services;
+using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 
 namespace teachersAndStudents.API
 {
@@ -68,7 +69,9 @@ namespace teachersAndStudents.API
             services.AddScoped<IAccountModel, AccountModel>();
             services.AddScoped<ITeacherModel,TeacherModel>();
 
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson(options =>
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            );
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "teachersAndStudents.API", Version = "v1" });

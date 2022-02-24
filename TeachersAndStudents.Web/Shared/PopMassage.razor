@@ -1,19 +1,29 @@
-﻿pop
-<div classs="container p-5 ">
+﻿@using TeachersAndStudents.models
+@if(Error.HaveError){
+<div classs="container p-5 " >
 	<div class="alert alert-danger shadow" role="alert" style="border-left:#721C24 5px solid; border-radius: 0px">
-			<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+			<button @onclick="onclose" type="button" class="close" data-dismiss="alert" aria-label="Close">
 				<span aria-hidden="True" style="color:#721C24">&times;</span>
 			</button>
 			<div class="row">
-		  		<p style="font-size:18px" class="mb-0 font-weight-light"><b class="mr-1">@title</b>@body</p>
+		  		<p style="font-size:18px" class="mb-0 font-weight-light"><b class="mr-1">@title</b>@Error.Message</p>
 			</div>
 		</div>
 </div>
+}
 @code {
-    [Parameter]
-    public string title { get; set; }
-    [Parameter]
-    public string body { get; set; }
+	[Parameter]
+	public string title { get; set; }
+	[Parameter]
+	public ERROR Error { get; set; }
+
+	[Parameter]
+	public EventCallback<ERROR> ErrorChanged { get; set; }
+	protected async Task onclose()
+	{
+		Error.HaveError = false;
+		await ErrorChanged.InvokeAsync(Error);
+	}
 
 
 }

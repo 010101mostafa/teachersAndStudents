@@ -31,13 +31,13 @@ namespace teachersAndStudents.API.Models
             if (s.ClassId == default(string))
                 s.ClassId = student.ClassId;
             else
-                throw new System.Exception($"the student {s.FullName}is already in a Class");
+                throw new System.Exception($"the student {s.FullName} is already in a Class");
             await appDbContext.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<Class>> getClass(string TeacherId)
         {
-            return (await appDbContext.Teachers.Include(t => t.Class).FirstOrDefaultAsync(t => t.UserId == TeacherId)).Class;       
+            return (await appDbContext.Teachers.Include(t=>t.Class).FirstOrDefaultAsync(t => t.UserId == TeacherId)).Class;
         }
 
         public async Task<List<Student>> getStudent()
